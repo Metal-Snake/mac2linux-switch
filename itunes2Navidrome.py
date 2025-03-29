@@ -94,7 +94,7 @@ def read_ratings_from_file(file_path: str) -> List[Tuple[str, int, str, int]]:
 
 
 def insert_ratings_into_navidrome(db_path: str, ratings: List[Tuple[str, int, str, int]], db_type: str = "sqlite", user_id: str = "1"):
-    logging.debug("Connecting to Navidrome database...")
+    logging.debug(f"Connecting to Navidrome database {db_path}")
     if db_type == "sqlite":
         conn = sqlite3.connect(db_path)
     #elif db_type == "postgres":
@@ -104,6 +104,8 @@ def insert_ratings_into_navidrome(db_path: str, ratings: List[Tuple[str, int, st
     
     cursor = conn.cursor()
     for file_path, rating, play_date, play_count in ratings:
+        if play_date == '1904-01-01T01:00:00':
+            play_date = None
         #logging.debug(f"Processing file: {file_path} with rating: {rating}, play_date: {play_date}, and play_count: {play_count}")
         file_path = file_path.replace("Pluto:iTunes 2017:Music:", "") # ChangeME For the first record
         file_path = file_path.replace("iTunes 2017:Music:", "")  # ChangeME All other records are missing part of the part because of the split above
